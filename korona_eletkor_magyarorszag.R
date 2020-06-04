@@ -6,7 +6,7 @@ library(readxl)
 library(ggplot2)
 library(scales)
 
-#https://koronavirus.gov.hu/elhunytak oldalrol, downloaded 2020.05.28
+#https://koronavirus.gov.hu/elhunytak oldalrol, letöltve 2020.06.04
 deaths_HUN <- read_excel("magyaro_halalok.xlsx")
 
 # a koreloszláshoz a 2020-as népeeség előreszámítást használom https://www.ksh.hu/interaktiv/korfak/orszag.html
@@ -14,6 +14,8 @@ pop_by_age_hungary <- read_excel("korfa_mo_2020.xlsx")
 
 # koronavirusban elhunytak száma életkoronként
 num_deaths <- deaths_HUN %>% 
+#csak nők/férfiak kiválasztása  
+#filter(nem=="Férfi")  %>% 
   group_by(kor) %>% 
   summarize(NUM_DEATH=n())
 
@@ -28,7 +30,7 @@ deaths_by_age_hungary <- deaths_by_age_hungary %>%
 #http://real-j.mtak.hu/11220/4/650.1962.06.03.pdf alapján BCG3 változó labeljei
 
 #ábra az 1 emberre jutó halálok számáról az adott korosztálbyan
-filter(deaths_by_age_hungary, AGE>40 & AGE<90) %>%
+filter(deaths_by_age_hungary, AGE>50 & AGE<90) %>%
   ggplot(aes(x = AGE, y = DEATH_RATIO, color=BCG)) + 
     geom_point() + stat_smooth(method = loess, level = 0) +
     xlab("Életkor") +
@@ -39,7 +41,7 @@ filter(deaths_by_age_hungary, AGE>40 & AGE<90) %>%
   scale_y_continuous(labels=scales::percent)
 
 #logaritmikus skálán ábrázolva, 50-53 időszak különvéve
-filter(deaths_by_age_hungary, AGE>40 & AGE<90) %>%
+filter(deaths_by_age_hungary, AGE>50 & AGE<90) %>%
   mutate(DEATH_RATIO = ifelse(DEATH_RATIO==0, NA, DEATH_RATIO) ) %>%
   ggplot(aes(x = AGE, y = DEATH_RATIO, color=BCG3)) + 
   geom_point() +
@@ -47,5 +49,5 @@ filter(deaths_by_age_hungary, AGE>40 & AGE<90) %>%
   ylab("Elhunytak aránya az adott életkorú csoportban") +
   scale_color_discrete(name="",
                        breaks=c("3", "2", "1"),
-                       labels=c("minden újszülött beoltva","újszülöttek 30-40%-a beoltva","nincs széleskörű újszülött oltás")) +
+                       labels=c("minden újszülött beoltva","újszülöttek 30-40%-a beoltva","nincs széleskörű újszülött oltás"))+
   scale_y_log10(labels=scales::percent)

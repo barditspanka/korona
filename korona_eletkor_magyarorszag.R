@@ -46,7 +46,7 @@ filter(deaths_by_age_hungary, AGE>50 & AGE<90) %>%
   ggplot(aes(x = AGE, y = DEATH_RATIO, color=BCG3)) + 
   geom_point() +
   xlab("Életkor") +
-  ylab("Elhunytak aránya az adott életkorú csoportban") +
+  ylab("Elhunytak aránya az adott életkorú csoportban \n (log skála)") +
   scale_color_discrete(name="",
                        breaks=c("3", "2", "1"),
                        labels=c("minden újszülött beoltva","újszülöttek 30-40%-a beoltva","nincs széleskörű újszülött oltás"))+
